@@ -27,6 +27,20 @@ router.post('/recipes', async (req, res) => {
 	res.redirect('/recipes')
 })
 
+router.post('/recipes/:id/duplicate', async (req, res) => {
+	const db = await getDbConnection()
+	const recipeId = req.params.id
+	const recipe = await db.get('SELECT * FROM recipes WHERE id = ?', [recipeId])
+	if (!recipe) {
+		return res.status(404).send('Recipe not found')
+	}
+	const result = await db.run(
+		'INSERT INTO recipes (title, ingredients, method) VALUES (?, ?, ?)',
+		[`${recipe.title} - COPY`, recipe.ingredients, recipe.method]
+	)
+	res.redirect(`/recipes/${result.lastID}`)
+})
+
 router.post('/recipes/:id/edit', async (req, res) => {
 	const db = await getDbConnection()
 	const recipeId = req.params.id

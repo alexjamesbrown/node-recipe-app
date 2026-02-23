@@ -64,4 +64,25 @@ describe('Routes', () => {
     expect(recipe).toBeDefined();
     expect(recipe.title).toBe(newRecipe.title);
   });
+
+  test('POST /recipes/:id/duplicate should duplicate a recipe with " - COPY" appended to the title', async () => {
+    // Create an original recipe first
+    await db.run(
+      'INSERT INTO recipes (title, ingredients, method) VALUES (?, ?, ?)',
+      ['Original Recipe', 'Some ingredients', 'Some method']
+    );
+    const original = await db.get('SELECT * FROM recipes WHERE title = ?', ['Original Recipe']);
+
+    const response = await request(app)
+      .post(`/recipes/${original.id}/duplicate`);
+
+    expect(response.status).toBe(302); // Redirect to the new recipe
+
+    // Verify the copy was created
+    const copy = await db.get('SELECT * FROM recipes WHERE title = ?', ['Original Recipe - COPY']);
+    expect(copy).toBeDefined();
+    expect(copy.title).toBe('Original Recipe - COPY');
+    expect(copy.ingredients).toBe(original.ingredients);
+    expect(copy.method).toBe(original.method);
+  });
 });

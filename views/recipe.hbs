@@ -4,6 +4,9 @@
             <h1>{{recipe.title}}</h1>
             <div class="recipe-actions">
                 <button class="btn btn-primary" onclick="showEditForm()">Edit Recipe</button>
+                <form action="/recipes/{{recipe.id}}/duplicate" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-secondary">Copy</button>
+                </form>
                 <a href="/recipes" class="btn btn-secondary">Back to All Recipes</a>
             </div>
         </div>

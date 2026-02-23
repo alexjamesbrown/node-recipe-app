@@ -10,7 +10,7 @@
 	"updateContentCommand": "npm install",
 	"postCreateCommand": "",
 	"postAttachCommand": {
-		"server": "npm start"
+		"server": "npm run dev"
 	},
 
 	// Configure tool-specific properties.
